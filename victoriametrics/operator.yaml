@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: monitoring
+  name: victoriametrics-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: victoriametrics-operator
+  name: victoriametrics-operator
+  namespace: monitoring
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      control-plane: victoriametrics-operator
+  template:
+    metadata:
+      labels:
+        control-plane: victoriametrics-operator
+    spec:
+      containers:
+      - args:
+        - --enable-leader-election
+        env:
+        - name: WATCH_NAMESPACE
+          value: ""
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: victoriametrics-operator
+        - name: VM_DISABLESELFSERVICESCRAPECREATION
+          value: "true"
+        - name: VM_ENABLEDPROMETHEUSCONVERTER_PODMONITOR
+          value: "false"
+        - name: VM_ENABLEDPROMETHEUSCONVERTER_SERVICESCRAPE
+          value: "false"
+        - name: VM_ENABLEDPROMETHEUSCONVERTER_PROMETHEUSRULE
+          value: "false"
+        - name: VM_ENABLEDPROMETHEUSCONVERTER_PROBE
+          value: "false"
+        - name: VM_VMALERTDEFAULT_IMAGE
+          value: quay.io/cybozu/victoriametrics-vmalert
+        - name: VM_VMALERTDEFAULT_VERSION
+          value: "1.80.0.1"
+        - name: VM_VMALERTDEFAULT_CONFIGRELOADIMAGE
+          value: quay.io/cybozu/configmap-reload:0.7.1.2
+        - name: VM_VMAGENTDEFAULT_IMAGE
+          value: quay.io/cybozu/victoriametrics-vmagent
+        - name: VM_VMAGENTDEFAULT_VERSION
+          value: "1.80.0.1"
+        - name: VM_VMAGENTDEFAULT_CONFIGRELOADIMAGE
+          value: quay.io/cybozu/prometheus-config-reloader:0.55.1.1
+        - name: VM_VMSINGLEDEFAULT_IMAGE
+          value: quay.io/cybozu/victoriametrics-vmsingle
+        - name: VM_VMSINGLEDEFAULT_VERSION
+          value: "1.80.0.1"
+        - name: VM_VMCLUSTERDEFAULT_VMSELECTDEFAULT_IMAGE
+          value: quay.io/cybozu/victoriametrics-vmselect
+        - name: VM_VMCLUSTERDEFAULT_VMSELECTDEFAULT_VERSION
+          value: "1.80.0.1"
+        - name: VM_VMCLUSTERDEFAULT_VMSTORAGEDEFAULT_IMAGE
+          value: quay.io/cybozu/victoriametrics-vmstorage
+        - name: VM_VMCLUSTERDEFAULT_VMSTORAGEDEFAULT_VERSION
+          value: "1.80.0.1"
+        - name: VM_VMCLUSTERDEFAULT_VMINSERTDEFAULT_IMAGE
+          value: quay.io/cybozu/victoriametrics-vminsert
+        - name: VM_VMCLUSTERDEFAULT_VMINSERTDEFAULT_VERSION
+          value: "1.80.0.1"
+        - name: VM_VMALERTMANAGER_ALERTMANAGERDEFAULTBASEIMAGE
+          value: quay.io/cybozu/alertmanager
+        - name: VM_VMALERTMANAGER_ALERTMANAGERVERSION
+          value: "0.24.0.3"
+        - name: VM_VMALERTMANAGER_CONFIGRELOADERIMAGE
+          value: quay.io/cybozu/configmap-reload:0.7.1.2
+        image: quay.io/cybozu/victoriametrics-operator:0.29.2.1
+        imagePullPolicy: IfNotPresent
+        name: manager
+        ports:
+        - name: http
+          containerPort: 8080
+        resources:
+          requests:
+            cpu: 80m
+            memory: 120Mi
+      serviceAccountName: victoriametrics-operator

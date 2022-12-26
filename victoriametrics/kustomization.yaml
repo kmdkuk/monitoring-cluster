@@ -1,0 +1,39 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+resources:
+  - upstream/crd
+  - upstream/rbac/vmagent_editor_role.yaml
+  - upstream/rbac/vmagent_viewer_role.yaml
+  - upstream/rbac/vmalert_editor_role.yaml
+  - upstream/rbac/vmalert_viewer_role.yaml
+  - upstream/rbac/vmalertmanager_editor_role.yaml
+  - upstream/rbac/vmalertmanager_viewer_role.yaml
+  - upstream/rbac/vmalertmanagerconfig_editor_role.yaml
+  - upstream/rbac/vmalertmanagerconfig_viewer_role.yaml
+  - upstream/rbac/vmpodscrape_editor_role.yaml
+  - upstream/rbac/vmpodscrape_viewer_role.yaml
+  - upstream/rbac/vmprobe_editor_role.yaml
+  - upstream/rbac/vmprobe_viewer_role.yaml
+  - upstream/rbac/vmrule_editor_role.yaml
+  - upstream/rbac/vmrule_viewer_role.yaml
+  - upstream/rbac/vmservicescrape_editor_role.yaml
+  - upstream/rbac/vmservicescrape_viewer_role.yaml
+  - upstream/rbac/vmstaticscrape_editor_role.yaml
+  - upstream/rbac/vmstaticscrape_viewer_role.yaml
+#  - rules
+  - operator.yaml
+  - vmagent.yaml
+  - vmcluster.yaml
+  - vmselect-dedicated.yaml
+  - vmsingle.yaml
+#  - rules/etcd-scrape.yaml
+#  - rules/kube-state-metrics-scrape.yaml
+#  - rules/kubernetes-scrape.yaml
+#  - rules/logging-scrape.yaml
+#  - rules/monitoring-scrape.yaml
+#  - rules/monitoring-alertrule.yaml
+#  - rules/node-scrape.yaml
+images:
+  - name: quay.io/cybozu/victoriametrics-vmselect
+    newTag: 1.80.0.1
