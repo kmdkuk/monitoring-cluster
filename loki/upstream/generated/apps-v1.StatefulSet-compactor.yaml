@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: compactor
+  namespace: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: compactor
+  serviceName: compactor
+  template:
+    metadata:
+      annotations:
+        config_hash: 9ad93d82778c2e2382c21bd5fd197c28
+      labels:
+        name: compactor
+    spec:
+      containers:
+      - args:
+        - -config.file=/etc/loki/config/config.yaml
+        - -limits.per-user-override-config=/etc/loki/overrides/overrides.yaml
+        - -target=compactor
+        env: []
+        image: quay.io/cybozu/loki
+        imagePullPolicy: IfNotPresent
+        name: compactor
+        ports:
+        - containerPort: 3100
+          name: http-metrics
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3100
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: "4"
+            memory: 2Gi
+        volumeMounts:
+        - mountPath: /data
+          name: compactor-data
+        - mountPath: /etc/loki/config
+          name: loki
+        - mountPath: /etc/loki/overrides
+          name: overrides
+      securityContext:
+        fsGroup: 10001
+      volumes:
+      - configMap:
+          name: loki
+        name: loki
+      - configMap:
+          name: overrides
+        name: overrides
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: compactor-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: standard
