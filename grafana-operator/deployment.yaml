@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: system
+  name: grafana-operator-controller-manager
+spec:
+  template:
+    spec:
+      containers:
+        - name: manager
+          command:
+            - /usr/local/bin/grafana-operator
+          args:
+            - --grafana-image=quay.io/cybozu/grafana
+            - --grafana-image-tag=9.1.4.1
+            - --grafana-plugins-init-container-image=quay.io/cybozu/grafana_plugins_init
+            - --grafana-plugins-init-container-tag=0.0.6.1
+            - --scan-all
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+        - $patch: delete
+          name: kube-rbac-proxy
+      volumes:
+      - name: tmp
+        emptyDir: {}
