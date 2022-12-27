@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki-data-bucket
+  namespace: logging
+data:
+  BUCKET_NAME: loki
+  BUCKET_HOST: minio.logging.svc:9000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio-client
+  namespace: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio-client
+  template:
+    metadata:
+      labels:
+        app: minio-client
+    spec:
+      containers:
+      - name: minio-client
+        image: quay.io/cybozu/ubuntu-debug:22.04
+        command:
+          - pause
+        env:
+          - name: BUCKET_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: loki-data-bucket
+                key: BUCKET_NAME
+          - name: BUCKET_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: loki-data-bucket
+                key: BUCKET_HOST
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: loki-data-bucket
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: loki-data-bucket
+                key: AWS_SECRET_ACCESS_KEY
