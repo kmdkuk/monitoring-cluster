@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: logging
 resources:
   - ./upstream
+  - service.yaml
 images:
   - name: quay.io/cybozu/memcached
     newTag: 1.6.16.1

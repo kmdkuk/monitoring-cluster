@@ -5,6 +5,8 @@ KUSTOMIZE_VERSION = 4.2.0
 GRAFANA_OPERATOR_VERSION = 4.6.0
 GRAFANA_PLUGINS_INIT_VERSION = 0.0.6
 LOKI_VERSION = 2.7.1
+PROMTAIL_HELM_VERSION = 6.6.2
+PROMTAIL_VERSION = 2.6.1.1
 
 # related loki version
 MEMCACHED_VERSION = 1.6.16.1
@@ -105,6 +107,12 @@ update-loki:
 
 	sed -i -E '/name:.*memcached$$/!b;n;s/newTag:.*$$/newTag: ${MEMCACHED_VERSION}/' loki/kustomization.yaml
 	sed -i -E '/name:.*memcached-exporter$$/!b;n;s/newTag:.*$$/newTag: ${MEMCACHED_EXPORTER_VERSION}/' loki/kustomization.yaml
+
+.PHONY: update-promtail
+update-promtail:
+	$(YQ) eval -i '.helmCharts[0].version = "${PROMTAIL_HELM_VERSION}"' promtail/upstream/kustomization.yaml
+	sed -i -E 's/tag:.*$$/tag: ${PROMTAIL_VERSION}/' promtail/upstream/values.yaml
+	$(KUSTOMIZE) build --enable-helm promtail/upstream > promtail/promtail.yaml
 
 .PHONY: update-victoriametrics-operator
 update-victoriametrics-operator:
