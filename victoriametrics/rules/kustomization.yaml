@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+resources:
+  - kube-state-metrics-scrape.yaml
+  - kubernetes-scrape.yaml
+  - logging-scrape.yaml
+  - monitoring-scrape.yaml
+  - node-scrape.yaml

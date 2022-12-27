@@ -1,0 +1,168 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: victoriametrics-operator
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      control-plane: victoriametrics-operator
+  podMetricsEndpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: victoriametrics-operator
+        targetLabel: job
+      - sourceLabels: [__meta_kubernetes_pod_container_name]
+        regex: manager
+        action: keep
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: vmagent-single
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmagent-single
+      app.kubernetes.io/name: vmagent
+      managed-by: vm-operator
+  endpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: vmagent-single
+        targetLabel: job
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: vmsingle
+  namespace: monitoring
+  labels:
+    smallset: "true"
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmsingle
+      app.kubernetes.io/name: vmsingle
+      managed-by: vm-operator
+  endpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: vmsingle
+        targetLabel: job
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: vmagent-cluster
+  namespace: monitoring
+  labels:
+    smallset: "true"
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmagent-cluster
+      app.kubernetes.io/name: vmagent
+      managed-by: vm-operator
+  endpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: vmagent-cluster
+        targetLabel: job
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: vminsert
+  namespace: monitoring
+  labels:
+    smallset: "true"
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmcluster
+      app.kubernetes.io/name: vminsert
+      managed-by: vm-operator
+  endpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: vminsert
+        targetLabel: job
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: vmselect
+  namespace: monitoring
+  labels:
+    smallset: "true"
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmcluster
+      app.kubernetes.io/name: vmselect
+      managed-by: vm-operator
+  endpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: vmselect
+        targetLabel: job
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: vmstorage
+  namespace: monitoring
+  labels:
+    smallset: "true"
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmcluster
+      app.kubernetes.io/name: vmstorage
+      managed-by: vm-operator
+  endpoints:
+  - port: http
+    relabelConfigs:
+      - replacement: vmstorage
+        targetLabel: job
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames: [monitoring]
+  selector:
+    matchLabels:
+      app: grafana
+  podMetricsEndpoints:
+  - port: grafana-http
+    relabelConfigs:
+      - replacement: grafana
+        targetLabel: job
+---
+# grafana-operator does not expose its metrics.

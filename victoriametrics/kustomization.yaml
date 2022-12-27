@@ -21,20 +21,13 @@ resources:
   - upstream/rbac/vmservicescrape_viewer_role.yaml
   - upstream/rbac/vmstaticscrape_editor_role.yaml
   - upstream/rbac/vmstaticscrape_viewer_role.yaml
-#  - rules
+  - rules
   - rbac
   - operator.yaml
   - vmagent.yaml
   - vmcluster.yaml
   - vmselect-dedicated.yaml
   - vmsingle.yaml
-#  - rules/etcd-scrape.yaml
-#  - rules/kube-state-metrics-scrape.yaml
-#  - rules/kubernetes-scrape.yaml
-#  - rules/logging-scrape.yaml
-#  - rules/monitoring-scrape.yaml
-#  - rules/monitoring-alertrule.yaml
-#  - rules/node-scrape.yaml
 images:
   - name: quay.io/cybozu/victoriametrics-vmselect
     newTag: 1.80.0.1

@@ -60,6 +60,15 @@ create-minio:
 		--host-bucket=$${BUCKET_HOST} --no-ssl --access_key=$${AWS_ACCESS_KEY_ID} \
 		--secret_key=$${AWS_SECRET_ACCESS_KEY} mb s3://$${BUCKET_NAME}'
 
+.PHONY: get-grafana-password
+get-grafana-password:
+	$(KUBECTL)  get secret -n monitoring grafana-admin-credentials -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}" | base64 -d; echo
+
+.PHONY: grafana-port-forward
+grafana-port-forward:
+	$(MAKE) get-grafana-password
+	$(KUBECTL) port-forward -n monitoring svc/grafana-service 3000:3000
+
 .PHONY: update-all
 update-all: update-grafana-operator update-loki update-victoriametrics-operator
 
