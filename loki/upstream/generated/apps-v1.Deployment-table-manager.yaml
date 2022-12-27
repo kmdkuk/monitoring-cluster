@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       annotations:
-        config_hash: 9ad93d82778c2e2382c21bd5fd197c28
+        config_hash: 1178769e861ee5b46402af8e8aada4ef
       labels:
         name: table-manager
     spec:
@@ -23,6 +23,7 @@ spec:
         - -bigtable.grpc-client-rate-limit=5
         - -bigtable.grpc-client-rate-limit-burst=5
         - -bigtable.table-cache.enabled=true
+        - -config.expand-env=true
         - -config.file=/etc/loki/config/config.yaml
         - -limits.per-user-override-config=/etc/loki/overrides/overrides.yaml
         - -target=table-manager

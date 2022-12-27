@@ -1,9 +1,10 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMCluster
 metadata:
-  name: vmcluster-largeset
+  name: vmcluster
   namespace: monitoring
 spec:
+  retentionPeriod: "1"
   vmstorage:
     replicaCount: 3
     extraArgs:

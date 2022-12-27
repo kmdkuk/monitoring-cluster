@@ -22,6 +22,7 @@ resources:
   - upstream/rbac/vmstaticscrape_editor_role.yaml
   - upstream/rbac/vmstaticscrape_viewer_role.yaml
 #  - rules
+  - rbac
   - operator.yaml
   - vmagent.yaml
   - vmcluster.yaml

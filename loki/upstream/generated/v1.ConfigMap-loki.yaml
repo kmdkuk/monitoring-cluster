@@ -76,7 +76,7 @@ data:
         retransmit_factor: 2
         stream_timeout: 5s
     querier:
-        max_concurrent: 4
+        max_concurrent: 1
         query_ingesters_within: 2h
     query_range:
         align_queries_with_step: true

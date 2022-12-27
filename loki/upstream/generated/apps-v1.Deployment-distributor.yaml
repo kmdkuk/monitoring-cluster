@@ -17,12 +17,20 @@ spec:
   template:
     metadata:
       annotations:
-        config_hash: 9ad93d82778c2e2382c21bd5fd197c28
+        config_hash: 1178769e861ee5b46402af8e8aada4ef
       labels:
         name: distributor
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                name: distributor
+            topologyKey: kubernetes.io/hostname
       containers:
       - args:
+        - -config.expand-env=true
         - -config.file=/etc/loki/config/config.yaml
         - -limits.per-user-override-config=/etc/loki/overrides/overrides.yaml
         - -target=distributor
@@ -52,13 +60,6 @@ spec:
           name: loki
         - mountPath: /etc/loki/overrides
           name: overrides
-      topologySpreadConstraints:
-      - labelSelector:
-          matchLabels:
-            name: distributor
-        maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
       volumes:
       - configMap:
           name: loki

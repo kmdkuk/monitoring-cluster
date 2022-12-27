@@ -4,7 +4,7 @@ metadata:
   name: memcached-index-queries
   namespace: logging
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       name: memcached-index-queries

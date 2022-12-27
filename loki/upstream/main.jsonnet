@@ -23,7 +23,12 @@ loki {
 
     compactor_pvc_class: 'standard',
 
+    commonArgs+: {
+      'config.expand-env': 'true',
+    },
+
     replication_factor: 3,
+    memcached_replicas: 1,
 
     loki+: {
       auth_enabled: false,
@@ -79,6 +84,19 @@ loki {
         # We are not sure what the appropriate value is.
         max_concurrent_tail_requests: 1000
       },
+    },
+
+    querier+: {
+        concurrency: 1,
+        use_topology_spread: false,
+    },
+
+    queryFrontend+: {
+      replicas: 2,
+    },
+
+    distributor+: {
+        use_topology_spread: false,
     },
   },
 

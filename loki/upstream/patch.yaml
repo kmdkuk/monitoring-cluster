@@ -12,6 +12,7 @@ spec:
       containers:
         - name: distributor
           resources:
+            requests: null
             limits: null
           ports:
             - containerPort: 7946
@@ -28,6 +29,7 @@ spec:
       containers:
         - name: query-frontend
           resources:
+            requests: null
             limits: null
 ---
 apiVersion: apps/v1
@@ -62,6 +64,7 @@ spec:
                   name: loki-data-bucket
                   key: AWS_SECRET_ACCESS_KEY
           resources:
+            requests: null
             limits: null
 ---
 apiVersion: apps/v1
@@ -95,6 +98,9 @@ spec:
                 secretKeyRef:
                   name: loki-data-bucket
                   key: AWS_SECRET_ACCESS_KEY
+          resources:
+            requests: null
+            limits: null
       terminationGracePeriodSeconds: 30
 ---
 apiVersion: apps/v1
@@ -132,6 +138,7 @@ spec:
                   name: loki-data-bucket
                   key: AWS_SECRET_ACCESS_KEY
           resources:
+            requests: null
             limits: null
           ports:
             - containerPort: 7946
@@ -175,4 +182,64 @@ spec:
           ports:
             - containerPort: 7946
               name: gossip-ring
+          resources:
+            requests: null
+            limits: null
       terminationGracePeriodSeconds: 30
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memcached
+  namespace: logging
+spec:
+  template:
+    spec:
+      containers:
+        - name: memcached
+          resources:
+            requests: null
+            limits: null
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memcached-frontend
+  namespace: logging
+spec:
+  template:
+    spec:
+      containers:
+        - name: memcached-frontend
+          resources:
+            requests: null
+            limits: null
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memcached-index-queries
+  namespace: logging
+spec:
+  template:
+    spec:
+      containers:
+        - name: memcached
+          resources:
+            requests: null
+            limits: null
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memcached-frontend
+  namespace: logging
+spec:
+  template:
+    spec:
+      containers:
+        - name: memcached
+          resources:
+            requests: null
+            limits: null
+---
