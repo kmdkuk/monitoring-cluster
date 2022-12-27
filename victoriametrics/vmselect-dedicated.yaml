@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/instance: vmcluster
+    app.kubernetes.io/name: vmselect-dedicated
+  name: vmselect-vmcluster-dedicated
+  namespace: monitoring
+spec:
+  replicas: 3 # must be same as vmcluster's .spec.vmstorage.replicaCount
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: monitoring
+      app.kubernetes.io/instance: vmcluster
+      app.kubernetes.io/name: vmselect-dedicated
+  serviceName: vmselect-vmcluster-dedicated
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: monitoring
+        app.kubernetes.io/instance: vmcluster
+        app.kubernetes.io/name: vmselect-dedicated
+    spec:
+      containers:
+      - name: vmselect
+        image: quay.io/cybozu/victoriametrics-vmselect
+        imagePullPolicy: IfNotPresent
+        command: [ "bash", "-c" ]
+        args:
+        - |
+          set -e
+          STS_NAME=${POD_NAME%-*}
+          POD_ID=${POD_NAME##*-}
+          VMSTORAGE_STS_NAME=vmstorage-vmcluster
+          exec /vmselect \
+            -dedup.minScrapeInterval=10s \
+            -httpListenAddr=:8481 \
+            -replicationFactor=1 \
+            -selectNode=${POD_NAME}.${STS_NAME}.monitoring:8481 \
+            -storageNode=${VMSTORAGE_STS_NAME}-${POD_ID}.${VMSTORAGE_STS_NAME}.monitoring:8401
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - containerPort: 8481
+          name: http
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8481
+            scheme: HTTP
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8481
+            scheme: HTTP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 500Mi
+---
+# Actually, this Service is not used... just for silencing StatefulSet controller
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmselect-vmcluster-dedicated
+  namespace: monitoring
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/instance: vmcluster
+    app.kubernetes.io/name: vmselect-dedicated
+  ports:
+  - port: 8481

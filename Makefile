@@ -71,6 +71,10 @@ grafana-port-forward:
 	$(MAKE) get-grafana-password
 	$(KUBECTL) port-forward -n monitoring svc/grafana-service 3000:3000
 
+.PHONY: exec-debug
+exec-debug:
+	$(KUBECTL) exec deploy/debug -it -- bash
+
 .PHONY: update-all
 update-all: update-grafana-operator update-loki update-victoriametrics-operator
 

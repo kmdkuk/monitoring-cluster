@@ -14,17 +14,18 @@ spec:
       url: http://vmselect-vmcluster.monitoring.svc:8481/select/0/prometheus
       version: 1
       isDefault: true
-      editable: false
+      editable: true
       jsonData:
         tlsSkipVerify: true
         timeInterval: "30s"
+        customQueryParameters: "nocache=1"
     - name: "vmcluster (vmstorage-0)"
       type: prometheus
       access: proxy
       url: http://vmselect-vmcluster-dedicated-0.vmselect-vmcluster-dedicated.monitoring.svc:8481/select/0/prometheus
       version: 1
       isDefault: false
-      editable: false
+      editable: true
       jsonData:
         tlsSkipVerify: true
         timeInterval: "30s"
@@ -34,7 +35,7 @@ spec:
       url: http://vmselect-vmcluster-dedicated-1.vmselect-vmcluster-dedicated.monitoring.svc:8481/select/0/prometheus
       version: 1
       isDefault: false
-      editable: false
+      editable: true
       jsonData:
         tlsSkipVerify: true
         timeInterval: "30s"
@@ -44,7 +45,7 @@ spec:
       url: http://vmselect-vmcluster-dedicated-2.vmselect-vmcluster-dedicated.monitoring.svc:8481/select/0/prometheus
       version: 1
       isDefault: false
-      editable: false
+      editable: true
       jsonData:
         tlsSkipVerify: true
         timeInterval: "30s"

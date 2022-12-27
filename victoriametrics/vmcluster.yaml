@@ -43,7 +43,7 @@ spec:
   vmselect:
     replicaCount: 3
     extraArgs:
-      replicationFactor: "2"
+      replicationFactor: "1"
       dedup.minScrapeInterval: 10s # should be equal to VMAgent's scrapeInterval (default 30s)
     resources:
       requests:
